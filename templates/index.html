@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista zadataka</title>
+    <!-- Naslov stranice -->
+    <style>
+      body {
+        font-family: Arial, sans-serif; /* Podešavanje fonta za celo telo stranice */
+        margin: 0; /* Uklanja margine oko tela stranice */
+        padding: 20px; /* Dodaje unutrašnji prostor od 20 piksela oko sadržaja stranice */
+        background-color: #f4f4f4; /* Postavljanje boje pozadine */
+      }
+      h1 {
+        color: #333; /* Postavljanje boje naslova */
+      }
+      input[type="text"] {
+        padding: 8px; /* Dodaje prostor unutar polja za unos teksta */
+        margin-bottom: 10px; /* Dodaje razmak ispod polja za unos teksta */
+        border-radius: 5px; /* Zaobljava ivice */
+      }
+      button {
+        padding: 10px 16px; /* Dodaje prostor unutar dugmeta */
+        background-color: #4caf50; /* Postavlja boju pozadine dugmeta */
+        color: white; /* Postavlja boju teksta na belu */
+        border: none; /* Uklanja ivicu dugmeta */
+        border-radius: 5px; /*Zaobljava ivice */
+        cursor: pointer; /* Postavlja kursor na pokazivač prilikom prelaska preko dugmeta */
+      }
+      button:hover {
+        background-color: #45a049; /* Postavlja boju pozadine dugmeta prilikom prelaska preko njega */
+      }
+      ul {
+        list-style-type: none; /* Uklanja podrazumevane oznake liste */
+        padding: 0; /* Uklanja unutrašnji prostor oko liste */
+      }
+      li {
+        background-color: #fff; /* Postavlja boju pozadine stavki liste */
+        padding: 10px; /* Dodaje prostor unutar svake stavke liste */
+        margin-bottom: 5px; /* Dodaje razmak ispod svake stavke liste */
+        border-radius: 5px; /* Zaobljava ivice stavki liste */
+        display: flex; /* Koristi flexbox za organizovanje elemenata */
+        justify-content: space-between; /* Poravnava stavke liste na glavnoj osi */
+        align-items: center; /* Centrira stavke liste na poprečnoj osi */
+      }
+      li:hover {
+        background-color: #f0f0f0; /* Postavlja boju pozadine stavki prilikom prelaska preko njih */
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Lista zadataka</h1>
+
+      <div>
+        <input
+          type="text"
+          id="todoInput"
+          placeholder="Naslov zadatka"
+          onkeydown="handleKeyPress(event)"
+        />
+        <!-- Polje za unos teksta -->
+        <button onclick="addTodo()">Dodaj</button>
+        <!-- Dugme za dodavanje zadatka -->
+      </div>
+    </div>
+
+    <ul id="todoList"></ul>
+    <!-- Lista za prikaz zadataka -->
+
+    <script>
+      const todoList = document.getElementById("todoList");
+
+      // Funkcija za dobavljanje svih zadataka
+      function fetchTodos() {
+        fetch("/todos")
+          .then((response) => response.json())
+          .then((data) => {
+            todoList.innerHTML = "";
+            data.todos.forEach((todo) => {
+              const li = document.createElement("li");
+
+              // Kreiranje textboxa za unos teksta zadatka
+              const todoInput = document.createElement("input");
+              todoInput.type = "text";
+              todoInput.value = todo.title;
+
+              // Kreiranje kontejnera za dugmad
+              const buttonContainer = document.createElement("div");
+              buttonContainer.style.display = "flex";
+              buttonContainer.style.gap = "10px"; // Dodaj razmak između dugmadi
+
+              // Kreiranje dugmeta za brisanje zadatka
+              const deleteBtn = document.createElement("button");
+              deleteBtn.textContent = "Obriši";
+              deleteBtn.onclick = () => deleteTodo(todo.id);
+
+              // Kreiranje dugmeta za izmenu zadatka
+              const editBtn = document.createElement("button");
+              editBtn.textContent = "Izmeni";
+              editBtn.onclick = () => {
+                const newTitle = todoInput.value;
+                updateTodoTitle(todo.id, newTitle);
+              };
+
+              // Dodavanje dugmadi u kontejner
+              buttonContainer.appendChild(deleteBtn);
+              buttonContainer.appendChild(editBtn);
+
+              // Dodavanje textboxa i kontejnera sa dugmadima u listu
+              li.appendChild(todoInput);
+              li.appendChild(buttonContainer);
+              todoList.appendChild(li);
+            });
+          });
+      }
+
+      // Funkcija za dodavanje novog zadatka
+      function addTodo() {
+        const title = document.getElementById("todoInput").value;
+        if (title == "") return; // ne dodajemo zadatke sa praznim naslovom
+        fetch("/todos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title: title }),
+        }).then((response) => {
+          if (response.ok) {
+            fetchTodos();
+          } else {
+            alert("Nije uspelo dodavanje zadatka");
+          }
+        });
+      }
+
+      // Funkcija za brisanje zadatka
+      function deleteTodo(todoId) {
+        fetch(`/todos/${todoId}`, {
+          method: "DELETE",
+        }).then((response) => {
+          if (response.ok) {
+            fetchTodos();
+          } else {
+            alert("Nije uspelo brisanje zadatka");
+          }
+        });
+      }
+
+      // Funkcija za izmenu naslova zadatka
+      function updateTodoTitle(todoId, newTitle) {
+        fetch(`/todos/${todoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title: newTitle }),
+        }).then((response) => {
+          if (response.ok) {
+            fetchTodos();
+          } else {
+            alert("Nije uspelo izmena zadatka");
+          }
+        });
+      }
+
+      //Funkcija koja omogucava da se tasterom enter doda novi zadatak
+      function handleKeyPress(event) {
+        if (event.key === "Enter") {
+          addTodo();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchTodos);
+    </script>
+  </body>
+</html>
