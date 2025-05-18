@@ -36,7 +36,7 @@
 
 University Project Simple RESTAPI is a streamlined solution for managing tasks, combining a robust backend with an intuitive frontend. 
 
-**Why Uni-Project-Simple-RESTAPI?**
+**Why University-Project-Simple-RESTAPI?**
 
 This project simplifies task management by providing a RESTful API for seamless integration with frontend applications. The core features include:
 
@@ -59,7 +59,7 @@ This project requires the following dependencies:
 
 ### ⚙️ Installation
 
-Build Uni-Project-Simple-RESTAPI from the source and intsall dependencies:
+Build University-Project-Simple-RESTAPI from the source and intsall dependencies:
 
 1. **Clone the repository:**
 
