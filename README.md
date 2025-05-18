@@ -4,7 +4,7 @@
 <div align="center">
 
 
-# UNI-PROJECT-SIMPLE-RESTAPI
+# UNIVERSITY-PROJECT-SIMPLE-RESTAPI
 
 <em>Effortlessly manage tasks, simplify your life today!</em>
 
@@ -34,7 +34,7 @@
 
 ## ✨ Overview
 
-Uni-Project-Simple-RESTAPI is a streamlined solution for managing tasks, combining a robust backend with an intuitive frontend. 
+University Project Simple RESTAPI is a streamlined solution for managing tasks, combining a robust backend with an intuitive frontend. 
 
 **Why Uni-Project-Simple-RESTAPI?**
 
