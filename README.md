@@ -2,7 +2,6 @@
 
 <div align="center">
 
-
 # UNIVERSITY-PROJECT-SIMPLE-RESTAPI
 
 <em>Effortlessly manage tasks, simplify your life today!</em>
